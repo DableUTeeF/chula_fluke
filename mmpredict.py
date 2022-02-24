@@ -29,7 +29,7 @@ if __name__ == '__main__':
     cfg = Config.fromfile('/media/palm/BiggerData/mmdetection/configs/vfnet/vfnet_r50_fpn_mdconv_c3-c5_mstrain_2x_coco.py')
     cfg.model.bbox_head.num_classes = 11
 
-    model = init_detector(cfg, '/media/palm/BiggerData/Chula_Parasite/checkpoints/vfnet_r50/epoch_23.pth', device='cuda')
+    model = init_detector(cfg, '/media/palm/BiggerData/Chula_Parasite/checkpoints/vfnet_r50/epoch_20.pth', device='cuda')
     outputs = {}
     annotations = []
     for i, file in enumerate(os.listdir(data)):
