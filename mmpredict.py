@@ -22,14 +22,22 @@ CLASSES = (
 )
 if __name__ == '__main__':
     data = '/media/palm/BiggerData/Chula_Parasite/test/data'
-    # cfg = Config.fromfile('/media/palm/BiggerData/mmdetection/configs/cascade_rcnn/cascade_rcnn_r101_fpn_20e_coco.py')
-    # cfg.model.roi_head.bbox_head[0].num_classes = 11
-    # cfg.model.roi_head.bbox_head[1].num_classes = 11
-    # cfg.model.roi_head.bbox_head[2].num_classes = 11
-    cfg = Config.fromfile('/media/palm/BiggerData/mmdetection/configs/vfnet/vfnet_r50_fpn_mdconv_c3-c5_mstrain_2x_coco.py')
-    cfg.model.bbox_head.num_classes = 11
+    cfg = Config.fromfile('/media/palm/BiggerData/mmdetection/configs/cascade_rcnn/cascade_rcnn_r101_fpn_20e_coco.py')
+    cfg.model.roi_head.bbox_head[0].num_classes = 11
+    cfg.model.roi_head.bbox_head[1].num_classes = 11
+    cfg.model.roi_head.bbox_head[2].num_classes = 11
 
-    model = init_detector(cfg, '/media/palm/BiggerData/Chula_Parasite/checkpoints/vfnet_r50/epoch_20.pth', device='cuda')
+    # cfg.model.backbone = dict(
+    #     # _delete_=True,
+    #     type='PyramidVisionTransformerV2',
+    #     embed_dims=32,
+    #     num_layers=[2, 2, 2, 2],
+    #     init_cfg=dict(checkpoint='https://github.com/whai362/PVT/'
+    #                              'releases/download/v2/pvt_v2_b0.pth'))
+    #
+    # cfg.model.neck.in_channels = [32, 64, 160, 256]
+
+    model = init_detector(cfg, '/media/palm/BiggerData/Chula_Parasite/checkpoints/cascade_r101_albu_finetunded/ft/epoch_20.pth', device='cuda')
     outputs = {}
     annotations = []
     for i, file in enumerate(os.listdir(data)):
@@ -60,4 +68,4 @@ if __name__ == '__main__':
     outputs['annotations'] = annotations
     f = str(time.time())
     os.makedirs(os.path.join('results', f))
-    json.dump(outputs, open(f'results/{f}/result_vfnet_r50.json', 'w'))
+    json.dump(outputs, open(f'results/{f}/result_cascade_pvt-v2-b0_std.json', 'w'))
