@@ -1,33 +1,60 @@
 from mmcv import Config
 import os
+import schedules
 
 main_path = '/media/palm/BiggerData/mmdetection/configs'
+
+
+class Faster_RCNN:
+    @staticmethod
+    def resnet(path):
+        cfg = Config.fromfile(os.path.join(main_path, path))
+        cfg.model.roi_head.bbox_head.num_classes = 11
+        return cfg
+
+    @staticmethod
+    def resnet_50():
+        return Faster_RCNN.resnet('faster_rcnn/faster_rcnn_r50_fpn_1x_coco.py')
+
+    @staticmethod
+    def resnet_101():
+        return Faster_RCNN.resnet('faster_rcnn/faster_rcnn_r101_fpn_1x_coco.py')
+
 
 class Yolo:
     @staticmethod
     def generic():
         cfg = Config.fromfile(os.path.join(main_path, 'yolo/yolov3_d53_mstrain-608_273e_coco.py'))
         cfg.model.bbox_head.num_classes = 11
+        cfg.data.samples_per_gpu = 6
         return cfg
 
 
 class RetinaNet:
     @staticmethod
     def resnet_50():
-        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r50_fpn_mstrain_640-800_3x_coco.py'))
+        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r50_fpn_2x_coco.py'))
         base_cfg.model.bbox_head.num_classes = 11
         return base_cfg
 
     @staticmethod
     def resnet_101():
-        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r101_fpn_mstrain_640-800_3x_coco.py'))
+        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r101_fpn_2x_coco.py'))
         base_cfg.model.bbox_head.num_classes = 11
         return base_cfg
 
     @staticmethod
     def resnext_101_64():
-        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_x101_64x4d_fpn_mstrain_640-800_3x_coco.py'))
+        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_x101_64x4d_fpn_2x_coco.py'))
         base_cfg.model.bbox_head.num_classes = 11
+        base_cfg = schedules.LinearSchedules.set_20e(base_cfg)
+        return base_cfg
+
+    @staticmethod
+    def pvtv2_b0():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'pvt/retinanet_pvtv2-b0_fpn_1x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        base_cfg = schedules.LinearSchedules.set_20e(base_cfg)
         return base_cfg
 
 
