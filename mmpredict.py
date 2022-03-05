@@ -37,7 +37,7 @@ if __name__ == '__main__':
     #
     # cfg.model.neck.in_channels = [32, 64, 160, 256]
 
-    model = init_detector(models.CascadeRCNN.crpn(), '/media/palm/BiggerData/Chula_Parasite/checkpoints/crpn_r50_ft/epoch_20.pth', device='cuda')
+    model = init_detector(models.Yolo.generic(), '/media/palm/BiggerData/Chula_Parasite/checkpoints/yolo_mosaic/ft/epoch_20.pth', device='cuda')
     outputs = {}
     annotations = []
     for i, file in enumerate(os.listdir(data)):
@@ -68,4 +68,4 @@ if __name__ == '__main__':
     outputs['annotations'] = annotations
     f = str(time.time())
     os.makedirs(os.path.join('results', f))
-    json.dump(outputs, open(f'results/{f}/result_crpn_r50_ft.json', 'w'))
+    json.dump(outputs, open(f'results/{f}/result_yolo_mosaic_ft.json', 'w'))

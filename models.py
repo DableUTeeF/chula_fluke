@@ -5,6 +5,30 @@ import schedules
 main_path = '/media/palm/BiggerData/mmdetection/configs'
 
 
+class Tood:
+    @staticmethod
+    def resnet_50():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'tood/tood_r50_fpn_1x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        return base_cfg
+
+
+class GFL:
+    @staticmethod
+    def resnet_50():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'gfl/gfl_r50_fpn_1x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        return base_cfg
+
+
+class VFNet:
+    @staticmethod
+    def resnet_50():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'vfnet/vfnet_r50_fpn_1x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        return base_cfg
+
+
 class Faster_RCNN:
     @staticmethod
     def resnet(path):
@@ -32,6 +56,26 @@ class Yolo:
 
 class RetinaNet:
     @staticmethod
+    def rsb_50():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r50_fpn_2x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        checkpoint = 'https://download.openmmlab.com/mmclassification/v0/resnet/resnet50_8xb256-rsb-a1-600e_in1k_20211228-20e21305.pth'
+        model = dict(
+            backbone=dict(
+                init_cfg=dict(
+                    type='Pretrained', prefix='backbone.', checkpoint=checkpoint)))
+        base_cfg.model.backbone.init_cfg.type = 'Pretrained'
+        base_cfg.model.backbone.init_cfg.prefix = 'backbone.'
+        base_cfg.model.backbone.init_cfg.checkpoint = 'checkpoint'
+        optimizer = dict(
+            type='AdamW',
+            lr=0.0001,
+            weight_decay=0.05,
+            paramwise_cfg=dict(norm_decay_mult=0., bypass_duplicate=True))
+        base_cfg.optimizer = optimizer
+        return base_cfg
+
+    @staticmethod
     def resnet_50():
         base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r50_fpn_2x_coco.py'))
         base_cfg.model.bbox_head.num_classes = 11
@@ -41,6 +85,8 @@ class RetinaNet:
     def resnet_101():
         base_cfg = Config.fromfile(os.path.join(main_path, 'retinanet/retinanet_r101_fpn_2x_coco.py'))
         base_cfg.model.bbox_head.num_classes = 11
+        base_cfg = schedules.LinearSchedules.set_20e(base_cfg)
+        base_cfg.optimizer_config.grad_clip = dict(max_norm=35, norm_type=2)
         return base_cfg
 
     @staticmethod
@@ -53,6 +99,20 @@ class RetinaNet:
     @staticmethod
     def pvtv2_b0():
         base_cfg = Config.fromfile(os.path.join(main_path, 'pvt/retinanet_pvtv2-b0_fpn_1x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        base_cfg = schedules.LinearSchedules.set_20e(base_cfg)
+        return base_cfg
+
+    @staticmethod
+    def pvtv2_b3():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'pvt/retinanet_pvtv2-b3_fpn_1x_coco.py'))
+        base_cfg.model.bbox_head.num_classes = 11
+        base_cfg = schedules.LinearSchedules.set_20e(base_cfg)
+        return base_cfg
+
+    @staticmethod
+    def pvtv2_b1():
+        base_cfg = Config.fromfile(os.path.join(main_path, 'pvt/retinanet_pvtv2-b1_fpn_1x_coco.py'))
         base_cfg.model.bbox_head.num_classes = 11
         base_cfg = schedules.LinearSchedules.set_20e(base_cfg)
         return base_cfg
